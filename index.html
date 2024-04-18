@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acquisto Online</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <style>
+        form {
+            padding: 143px;
+        }
+        input {
+            padding: 7px;
+        }
+        .form-group.col-md-6 {
+            margin: 11px;
+        }
+        .form-group{
+            margin: 11px;
+        }
+        label {
+            font-size: 23px;
+            font-family: sans-serif;
+            color: black;
+            padding-right: 19px;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+     <script src="js/FileSaver.js"></script>
+</head>
+<div id="nav" style="background-color: #198754;">
+    <nav class="navbar" style="position: initial;">
+        <a class="navbar-brand" href="index.html" style="margin-inline-start: 34px;font-family: sans-serif; color: black;">Home</a>
+        <a class="navbar-brand" href="product.html" style="margin-inline-start: 34px;font-family: sans-serif; color: black;">Product</a>
+    </nav>
+</div>
+<body style="background-color: mediumseagreen;">
+
+    <form style="text-align: justify;" id="loginForm">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="inputEmail">Email</label>
+            <input type="email" class="form-control" id="email" placeholder="Email">
+            <span id="mailError" class="error-message"></span><br>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputPassword4">Password</label>
+            <input type="password" class="form-control" id="psw" placeholder="Password">
+            <span id="pswError" class="error-message"></span><br>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputAddress">Address</label>
+          <input type="text" class="form-control" id="inputAddress" placeholder="indirizzo_civico">
+          <span id="addressError" class="error-message"></span><br>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="inputCity">City</label>
+            <input type="text" class="form-control" id="inputCity" placeholder="es: Rome">
+            <span id="cityError" class="error-message"></span><br>
+          </div>
+        </div>
+        <button href="pagamento.html" type="submit" id="proceedToPayment" class="btn btn-success">Proceed to payment</button>
+      </form>
+      <script src="index.js"></script>
+</body>
+</html>
