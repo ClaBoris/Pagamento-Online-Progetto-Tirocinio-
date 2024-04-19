@@ -57,13 +57,31 @@ loginForm.addEventListener('submit', function(event){
 });
 
 
-/**POST**/
+/**POST E FINGERPRINTING**/
 
-document.getElementById("proceedToPayment").addEventListener('click', function(event) {
+function generateFingerprint(callback) {
+  var fingerprint = "";
+
+  // Aggiungi informazioni uniche sul dispositivo o sul browser
+  fingerprint += "Browser=" + encodeURIComponent(navigator.userAgent) + "&";
+  fingerprint += "ScreenSize=" + screen.width + "x" + screen.height;
+
+  // Chiamata alla funzione di callback con il fingerprint come argomento
+  callback(fingerprint);
+}
+
+
+
+/*document.getElementById("proceedToPayment").addEventListener('click', function(event) {
   event.preventDefault(); // Evita il comportamento predefinito del modulo
 
+  // Funzione di callback per inviare la richiesta POST con il fingerprint incluso
+   function sendPostRequest(fingerprint) {
   // Ottieni i dati del modulo
   const formData = new FormData(document.getElementById("loginForm"));
+
+  // Aggiungi il fingerprint ai dati del modulo
+  formData.append('fingerprint', JSON.stringify(fingerprint));
 
   // Effettua una richiesta POST al server
   fetch('http://localhost:5500/PagamentoOnline/pre-payment', {
@@ -89,5 +107,52 @@ document.getElementById("proceedToPayment").addEventListener('click', function(e
       alert('There was a problem with the data load.');
   })
 
-  
+  } 
+
+  // Genera il fingerprint e passa la funzione di callback
+  generateFingerprint(sendPostRequest);
+
+
+});*/
+
+document.getElementById("proceedToPayment").addEventListener('click', function(event) {
+  event.preventDefault(); // Evita il comportamento predefinito del modulo
+
+  // Funzione di callback per inviare la richiesta POST con il fingerprint incluso
+  function sendPostRequest(fingerprint) {
+    // Ottieni i dati del modulo
+    const formData = new FormData(document.getElementById("loginForm"));
+
+    // Costruisci l'URL con i parametri del fingerprint
+    const url = 'http://localhost:5500/PagamentoOnline/pre-payment?' +
+                'fingerprint=' + encodeURIComponent(JSON.stringify(fingerprint));
+
+    // Effettua una richiesta POST al server
+    fetch(url, {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json(); // Parsa la risposta JSON
+    })
+    .then(data => {
+        // Gestisci la risposta dal server
+        console.log(data); // Mostra la risposta dal server nella console
+        // Esegui ulteriori azioni se necessario, ad esempio mostrare un messaggio all'utente
+        window.location.href="pagamento.html";
+
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+        // Gestisci gli errori, ad esempio mostrando un messaggio all'utente
+        alert('There was a problem with the data load.');
+    });
+  }
+
+  // Genera il fingerprint e passa la funzione di callback
+  generateFingerprint(sendPostRequest);
 });
+
