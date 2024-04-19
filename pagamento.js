@@ -124,7 +124,7 @@ function generateFingerprint(callback) {
           // Gestisci la risposta dal server
           console.log(data); // Mostra la risposta dal server nella console
           // Esegui ulteriori azioni se necessario, ad esempio mostrare un messaggio all'utente
-          window.location.href="product.html";
+          window.location.href="pagamento_effettuato.html";
   
       })
       .catch(error => {
