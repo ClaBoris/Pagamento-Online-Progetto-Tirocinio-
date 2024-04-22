@@ -50,6 +50,52 @@ download.addEventListener('click', function(){
     saveEvents();
 });
 
+/***************************************IDENTIFICATORE UNIVOCO***************************************/
+
+// Genera un ID univoco per l'utente
+/*function generateUniqueID() {
+   //Esempio di generazione di un ID univoco basato sul timestamp
+  return 'userID_' + Date.now();
+}
+
+// Memorizza l'ID univoco/
+var userID = generateUniqueID();*/
+
+function generateUniqueID() {
+  //Esempio di generazione di un ID univoco basato sul timestamp
+ return 'userID_' + Date.now();
+}
+
+//funzione per salvare l'id univoco in un cookie
+function saveUserIDToCookie(userId){
+  document.cookie = "userId = " + userId + "; path=/";
+}
+
+// Funzione per recuperare l'ID univoco dal cookie
+function getUserIDFromCookie() {
+  var name = "userID=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var cookieArray = decodedCookie.split(';');
+  for (var i = 0; i < cookieArray.length; i++) {
+    var cookie = cookieArray[i];
+    while (cookie.charAt(0) === ' ') {
+      cookie = cookie.substring(1);
+    }
+    if (cookie.indexOf(name) === 0) {
+      return cookie.substring(name.length, cookie.length);
+    }
+  }
+  return "";
+}
+
+// Genera o recupera l'ID univoco dell'utente
+var userID = getUserIDFromCookie();
+if (!userID) {
+  userID = generateUniqueID();
+  saveUserIDToCookie(userID);
+}
+
+
 /***************************************FINGERPRINTING***************************************/
 
 
@@ -57,11 +103,12 @@ function generateFingerprint() {
   var fingerprint = "";
 
   // Aggiungi informazioni uniche sul dispositivo o sul browser
+  fingerprint += "UserID: " + userID + " & ";
   fingerprint += "Browser: " + encodeURIComponent(navigator.userAgent) + "&";
-  fingerprint += "Screen size: " + screen.width + "x" + screen.height;
+  fingerprint += " Screen size: " + screen.width + "x" + screen.height;
 
   // Aggiungi informazioni sugli eventi
-  fingerprint += "Events: " + array.join(", ");
+  fingerprint += " Events: " + array.join(", ");
 
   return fingerprint;
 }
@@ -98,6 +145,7 @@ function generateFingerprint() {
 
  // Aggiungi un event listener al pulsante per procedere con il pagamento
 var buyButton = document.getElementById("buyButton");
+
 buyButton.addEventListener('click', function() {
   var fingerprint = generateFingerprint(); // Genera il fingerprinting
   sendFingerprintAndEvents(fingerprint); // Invia il fingerprinting e gli eventi al server

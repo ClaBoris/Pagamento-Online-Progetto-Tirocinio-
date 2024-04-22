@@ -30,15 +30,18 @@
             color: red;
             font-size: 14px;
         }
+        #events {
+            display: none;
+        }
     </style>
      <script src="js/FileSaver.js"></script>
 </head>
 <div id="nav" style="background-color: #198754;">
     <nav class="navbar" style="position: initial;">
-        <a class="navbar-brand" href="pagamento.html" style="margin-inline-start: 34px;font-family: sans-serif; color: black;">Home</a>
+        <a class="navbar-brand" href="product.html" style="margin-inline-start: 34px;font-family: sans-serif; color: black;">Home</a>
     </nav>
 </div>
-<body style="background-color: mediumseagreen;">
+<body style="background-color: mediumseagreen;" id="body">
     <form id="makePayment">
         <!-- Section: Design Block -->
 <section class="">
@@ -88,9 +91,9 @@
                         <span id="nameAndSurnameError" class="error-message"></span><br>
                     </div>
                   <!-- Submit button -->
-                  <button type="submit" id="pay"class="btn btn-success">
+                  <a type="submit" id="pay"class="btn btn-success">
                      Make a payment!
-                  </button>
+                  </a>
                 </form>
               </div>
             </div>
@@ -103,5 +106,6 @@
   <!-- Section: Design Block -->
     </form>
     <script src="pagamento.js"></script>
+    <div id = "events"></div><!--div per visualizzare gli eventi-->
 </body>
 </html>

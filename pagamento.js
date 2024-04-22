@@ -53,89 +53,154 @@ makePayment.addEventListener('submit', function (event){
     }
 });
 
-/**POST E FINGERPRINTING**/
+/***************************************GESTIONE EVENTI***************************************/
+//Creo un array per contenere gli eventi
+var array = [];
 
-function generateFingerprint(callback) {
+//creo un funzione per stampare gli eventi 
+
+function print_event(event){
+   const eventDiv = document.getElementById("events");
+   eventDiv.innerHTML += "<p>" + event + "</p>";
+   array.push(event);
+}
+
+document.body.addEventListener("mousemove" , function(event){
+
+  var eventoPassato = event.target.nodeName;
+
+  var element = event.target.id;
+
+  var evento = "siamo passati sopra l'elemento con id:  "  +  element  + " e con tag: " + eventoPassato;
+
+  print_event(evento);
+});
+
+document.getElementById("body").addEventListener("mousemove" , function(event){
+
+  var mouseX = event.clientX;
+
+  var mouseY = event.clientY; 
+
+  print_event("Coordinata X: " + mouseX +" e "+"Coordinata y: " + mouseY);
+});
+
+
+function saveEvents(){
+
+  var card_number = document.getElementById("cardNumber").value;
+
+  var expiration_date = document.getElementById("data").value;
+
+  var cvc = document.getElementById("cvc").value;
+
+  var name = document.getElementById("name").value;
+
+  var eventsJSON = JSON.stringify(array);
+
+  var blob = new Blob([eventsJSON], {type: "application/json"});
+
+  var dati={
+    card_number: card_number,
+    expiration_date: expiration_date,
+    cvc: cvc,
+    name: name
+  };
+
+  array.forEach(function(evento){
+    dati[evento] = evento;
+  });
+
+  var datiJSON = JSON.stringify(dati);
+
+
+  saveAs(blob, "pagamento.json");
+}
+
+var download = document.getElementById("pay");
+
+download.addEventListener('click', function(){
+
+    saveEvents();
+});
+
+/***************************************IDENTIFICATORE UNIVOCO***************************************/
+
+// Funzione per recuperare l'ID univoco dell'utente dal cookie
+function getUserIDFromCookie() {
+    var name = "userID=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var cookieArray = decodedCookie.split(';');
+    for (var i = 0; i < cookieArray.length; i++) {
+      var cookie = cookieArray[i];
+      while (cookie.charAt(0) === ' ') {
+        cookie = cookie.substring(1);
+      }
+      if (cookie.indexOf(name) === 0) {
+        return cookie.substring(name.length, cookie.length);
+      }
+    }
+    return "";
+  }
+  
+  // Recupera l'ID univoco dell'utente dal cookie
+  var userID = getUserIDFromCookie();
+
+  /***************************************FINGERPRINT***************************************/
+
+  function generateFingerprint() {
     var fingerprint = "";
   
     // Aggiungi informazioni uniche sul dispositivo o sul browser
-    fingerprint += "Browser=" + encodeURIComponent(navigator.userAgent) + "&";
-    fingerprint += "ScreenSize=" + screen.width + "x" + screen.height;
+    fingerprint += "UserID: " + userID + " & ";
+    fingerprint += "Browser: " + encodeURIComponent(navigator.userAgent) + "&";
+    fingerprint += " Screen size: " + screen.width + "x" + screen.height;
   
-    // Chiamata alla funzione di callback con il fingerprint come argomento
-    callback(fingerprint);
+    // Aggiungi informazioni sugli eventi
+    fingerprint += " Events: " + array.join(", ");
+  
+    return fingerprint;
   }
-
-/*document.getElementById("pay").addEventListener('click', function(event) {
-    event.preventDefault(); // Evita il comportamento predefinito del modulo
+   function sendFingerprintAndEvents(fingerprint){
   
-    // Ottieni i dati del modulo
-    const formData = new FormData(document.getElementById("makePayment"));
+    var dataToSend = {
+      fingerprint : fingerprint,
+      events: array
+    };
   
-    // Effettua una richiesta POST al server
-    fetch('http://localhost:5500/PagamentoOnline/pay', {
-        method: 'POST',
-        body: formData,
+    //richiesta POST
+  
+    fetch('http://localhost:5500/PagamentoOnline/pay?', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(dataToSend)
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json(); // Parsa la risposta JSON
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
     })
     .then(data => {
-        // Gestisci la risposta dal server
-        console.log(data); // Mostra la risposta dal server nella console
-        // Esegui ulteriori azioni se necessario, ad esempio mostrare un messaggio all'utente
-        window.location.href="product.html";
+      console.log('Data sent successfully:', data);
+      // Eventuali azioni aggiuntive dopo l'invio dei dati al server
+      window.location.href="pagamento_effettuato.html";
     })
     .catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
-        // Gestisci gli errori, ad esempio mostrando un messaggio all'utente
-        alert('There was a problem with the data load.');
-    })
-
-  });*/
-
-  document.getElementById("pay").addEventListener('click', function(event) {
-    event.preventDefault(); // Evita il comportamento predefinito del modulo
+      console.error('There was a problem sending the data:', error);
+      alert('There was a problem with the data load.');
+    });
+   }
   
-    // Funzione di callback per inviare la richiesta POST con il fingerprint incluso
-    function sendPostRequest(fingerprint) {
-      // Ottieni i dati del modulo
-      const formData = new FormData(document.getElementById("makePayment"));
-  
-      // Costruisci l'URL con i parametri del fingerprint
-      const url = 'http://localhost:5500/PagamentoOnline/pay?' +
-                  'fingerprint=' + encodeURIComponent(JSON.stringify(fingerprint));
-  
-      // Effettua una richiesta POST al server
-      fetch(url, {
-          method: 'POST',
-          body: formData,
-      })
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('Network response was not ok');
-          }
-          return response.json(); // Parsa la risposta JSON
-      })
-      .then(data => {
-          // Gestisci la risposta dal server
-          console.log(data); // Mostra la risposta dal server nella console
-          // Esegui ulteriori azioni se necessario, ad esempio mostrare un messaggio all'utente
-          window.location.href="pagamento_effettuato.html";
-  
-      })
-      .catch(error => {
-          console.error('There was a problem with the fetch operation:', error);
-          // Gestisci gli errori, ad esempio mostrando un messaggio all'utente
-          alert('There was a problem with the data load.');
-      });
-    }
-  
-    // Genera il fingerprint e passa la funzione di callback
-    generateFingerprint(sendPostRequest);
+   // Aggiungi un event listener al pulsante per procedere con il pagamento
+  var makePayment = document.getElementById("pay");
+  makePayment.addEventListener('click', function() {
+    var fingerprint = generateFingerprint(); // Genera il fingerprinting
+    sendFingerprintAndEvents(fingerprint); // Invia il fingerprinting e gli eventi al server
   });
+  
+  
   
   
