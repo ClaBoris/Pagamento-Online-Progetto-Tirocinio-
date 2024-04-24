@@ -1,6 +1,6 @@
  /*RICHIESTA HTTP A MOCKOON*/
 
-fetch('http://localhost:5500/PagamentoOnline/product-to-buy')
+fetch('http://localhost:3000/PagamentoOnline/product-to-buy')
   .then(response => response.json())
   .then(data => {
     // Gestisci la risposta dalla tua API Mockoon
@@ -51,15 +51,6 @@ download.addEventListener('click', function(){
 });
 
 /***************************************IDENTIFICATORE UNIVOCO***************************************/
-
-// Genera un ID univoco per l'utente
-/*function generateUniqueID() {
-   //Esempio di generazione di un ID univoco basato sul timestamp
-  return 'userID_' + Date.now();
-}
-
-// Memorizza l'ID univoco/
-var userID = generateUniqueID();*/
 
 function generateUniqueID() {
   //Esempio di generazione di un ID univoco basato sul timestamp
@@ -112,7 +103,9 @@ function generateFingerprint() {
 
   return fingerprint;
 }
- function sendFingerprintAndEvents(fingerprint){
+
+
+function sendFingerprintAndEvents(fingerprint){
 
   var dataToSend = {
     fingerprint : fingerprint,
@@ -121,7 +114,7 @@ function generateFingerprint() {
 
   //richiesta POST
 
-  fetch('http://localhost:5500/PagamentoOnline/product-to-buy?', {
+  fetch('http://localhost:3000/PagamentoOnline/product-to-buy?', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -150,3 +143,5 @@ buyButton.addEventListener('click', function() {
   var fingerprint = generateFingerprint(); // Genera il fingerprinting
   sendFingerprintAndEvents(fingerprint); // Invia il fingerprinting e gli eventi al server
 });
+
+

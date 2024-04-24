@@ -54,6 +54,7 @@ loginForm.addEventListener('submit', function(event){
       return;
     }
     
+    
 });
 
 /***************************************GESTIONE EVENTI***************************************/
@@ -164,6 +165,8 @@ function generateFingerprint() {
 
   return fingerprint;
 }
+
+
  function sendFingerprintAndEvents(fingerprint){
 
   var dataToSend = {
@@ -173,7 +176,7 @@ function generateFingerprint() {
 
   //richiesta POST
 
-  fetch('http://localhost:5500/PagamentoOnline/pre-payment?', {
+  fetch('http://localhost:3000/PagamentoOnline/pre-payment?', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -203,4 +206,6 @@ buyButton.addEventListener('click', function() {
   var fingerprint = generateFingerprint(); // Genera il fingerprinting
   sendFingerprintAndEvents(fingerprint); // Invia il fingerprinting e gli eventi al server
 });
+
+
 
