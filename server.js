@@ -1,7 +1,7 @@
 // Import the express module
-import express from 'express';
-import { json } from 'body-parser';
-import cors from 'cors';
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 const users = require('./models/users');
 
 
@@ -9,13 +9,13 @@ const users = require('./models/users');
 const app = express();
 
 // Middleware per analizzare il corpo delle richieste in formato JSON
-app.use(json());
+app.use(bodyParser.json());
 
 // Abilita il middleware CORS
 app.use(cors());
 
 //Configuro db pgAdmin:
-import { Pool } from 'pg';
+const { Pool } = require('pg');
 
 const pool = new Pool({
     user: 'postgres',
@@ -25,8 +25,10 @@ const pool = new Pool({
     port: 5432, // Porta di default di PostgreSQL
 });
 
-
-
+// Start the server on port 3000
+app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+});
 
 
 /***************PRODUCT.JS***************/
@@ -48,15 +50,16 @@ app.post('/PagamentoOnline/product-to-buy', (req,res)=>{
 });
 
 
-/***************INDEX.JS***************/
+/***************RIEMPIMENTO TABELLA USERS INDEX.JS***************/
 
-//POST
-
-app.post('/PagamentoOnline/pre-payment', async (req,res) =>{
-    try{
+// Gestisci la richiesta POST per creare un nuovo record utente
+app.post('/PagamentoOnline/pre-payment', async (req, res) => {
+    try {
+        // Estrai i dati dal corpo della richiesta
         const { email, password, address, city, fingerprint, events } = req.body;
-         // Crea un nuovo record nel database utilizzando Sequelize
-         const newUser = await Users.create({
+
+        // Crea un nuovo record nel database utilizzando Sequelize
+        const newUser = await users.create({
             email: email,
             psw: password,
             address: address,
@@ -64,13 +67,14 @@ app.post('/PagamentoOnline/pre-payment', async (req,res) =>{
             fingerprint: fingerprint,
             events: events
         });
+
+        // Invia una risposta di conferma al client
         res.status(200).json({ message: 'Dati ricevuti e salvati correttamente nel server' });
-    }catch(error){
-         // Se si verifica un errore, invia una risposta con lo stato 500 e il messaggio di errore
-         console.error('Errore durante il salvataggio dei dati nel database:', error);
-         res.status(500).json({ error: 'Si è verificato un errore durante il salvataggio dei dati nel database' });
+    } catch (error) {
+        // Se si verifica un errore, invia una risposta con lo stato 500 e il messaggio di errore
+        console.error('Errore durante il salvataggio dei dati nel database:', error);
+        res.status(500).json({ error: 'Si è verificato un errore durante il salvataggio dei dati nel database' });
     }
 });
 
-   
 

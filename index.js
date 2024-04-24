@@ -176,7 +176,7 @@ function generateFingerprint() {
 
   //richiesta POST
 
-  fetch('http://localhost:3000/PagamentoOnline/pre-payment?', {
+  fetch('http://localhost:3000/PagamentoOnline/pre-payment', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
