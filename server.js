@@ -1,11 +1,10 @@
-// Import the express module
+// Importa i moduli necessari
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const users = require('./models/users');
+const path = require('path'); // Aggiunto modulo path
 
-
-// Create a new express application
+// Crea una nuova applicazione Express
 const app = express();
 
 // Middleware per analizzare il corpo delle richieste in formato JSON
@@ -14,45 +13,59 @@ app.use(bodyParser.json());
 // Abilita il middleware CORS
 app.use(cors());
 
-//Configuro db pgAdmin:
-const { Pool } = require('pg');
+// Middleware per servire i file statici dalla directory 'public'
+app.use(express.static(path.join(__dirname, 'public')));
 
-const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'postgres',
-    password: 'postgres',
-    port: 5432, // Porta di default di PostgreSQL
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'product.html'));
 });
+
 
 // Start the server on port 3000
 app.listen(3000, () => {
     console.log('Server is running on http://localhost:3000');
 });
 
-
 /***************PRODUCT.JS***************/
 
-//Gestisco la richiesta GET iniziale: 
+// Gestisci la richiesta GET iniziale
+app.get('/PagamentoOnline/product-to-buy', (req, res) => {
+    // Invia una risposta al client
+    res.json({ message: 'Dati ricevuti dal server Node.js' });
+});
 
-app.get('/PagamentoOnline/product-to-buy', (req, res) => { //definisce endpoint per richiesta http get al server Node.js
-
-    //invio risposta al client:
-    res.json({message: 'Dati ricevuti dal server Node.js'});
+// Gestisci la richiesta POST
+app.post('/PagamentoOnline/product-to-buy', (req, res) => {
+    const { fingerprint, events } = req.body;
+    // Invia una risposta al client
+    res.json({ message: 'Dati ricevuti e salvati correttamente sul server' });
 });
 
 
-//Gestisco la richiesta POST: 
+const { Pool } = require('pg');
 
-app.post('/PagamentoOnline/product-to-buy', (req,res)=>{
-    const {fingerprint, events} = req.body;
-    res.json({ message: 'Dati ricevuti e salvati correttamente sul server' });
+const pool = new Pool({
+  user: 'postgres',
+  host: '127.0.0.1',
+  database: 'postgres',
+  password: 'postgres',
+  port: 5432, // Porta predefinita di PostgreSQL
+});
+
+// Esempio di query al database
+pool.query('SELECT NOW()', (err, res) => {
+  if (err) {
+    console.error('Errore nella query:', err);
+  } else {
+    console.log('Risposta del database:', res.rows);
+  }
 });
 
 
 /***************RIEMPIMENTO TABELLA USERS INDEX.JS***************/
 
 // Gestisci la richiesta POST per creare un nuovo record utente
+/*
 app.post('/PagamentoOnline/pre-payment', async (req, res) => {
     try {
         // Estrai i dati dal corpo della richiesta
@@ -76,5 +89,4 @@ app.post('/PagamentoOnline/pre-payment', async (req, res) => {
         res.status(500).json({ error: 'Si è verificato un errore durante il salvataggio dei dati nel database' });
     }
 });
-
-
+*/
